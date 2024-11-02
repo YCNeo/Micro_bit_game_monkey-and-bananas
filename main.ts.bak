@@ -1,14 +1,14 @@
 let monkeyPosition: number[] = [];
 let queue: number[][] = [];
 let seed = 0;
-let step = 0;
 let scoreArr: number[] = [];
 let score = 0;
+let step = 0;
 let latency = 0;
-let isStart = false;
 let popBananas: number[] = [];
 let x = 0;
 let bright = 0;
+let isStart = false;
 input.onButtonPressed(Button.A, function () {
   led.unplot(monkeyPosition[0], monkeyPosition[1]);
   if (monkeyPosition[0] != 0) {
@@ -40,17 +40,21 @@ function judge() {
   }
   return scoreArr;
 }
+function consoleTime(_startTime: number) {
+  console.log(`step = ${step}, sec = ${control.millis() - _startTime}`);
+}
 input.onButtonPressed(Button.AB, function () {
   step = 0;
   latency = 1000;
   monkeyPosition = [2, 4];
   basic.showString("START!");
+  // let startTime = control.millis()
   isStart = true;
   led.plot(monkeyPosition[0], monkeyPosition[1]);
   while (step <= 73) {
-    if (step >= 20) {
-      latency = 500;
-    }
+    if (step >= 20) latency = 500;
+    // if (step == 20 || step == 46 || step == 72)
+    //     consoleTime(startTime)
     drop();
     if (step % 2 == 1) {
       generateBananas();
@@ -58,6 +62,7 @@ input.onButtonPressed(Button.AB, function () {
     }
     led.plotBrightness(popBananas[0], popBananas[1], 0);
     led.plot(monkeyPosition[0], monkeyPosition[1]);
+    // console.log(`step: ${step}, score: ${score}`);
     basic.pause(latency);
     step += 1;
   }
@@ -100,11 +105,8 @@ function isValid(x2: number, y2: number) {
 basic.forever(function () {
   if (isStart == true) {
     while (step < 46) {
-      if (step < 20) {
-        music.setTempo(100);
-      } else {
-        music.setTempo(160);
-      }
+      if (step < 20) music.setTempo(100);
+      else music.setTempo(160);
       music.rest(music.beat(BeatFraction.Half));
       music.play(
         music.tonePlayable(370, music.beat(BeatFraction.Half)),
